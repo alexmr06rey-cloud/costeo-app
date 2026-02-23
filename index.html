@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Costeo BOM</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#0f1a2e;
+      --panel2:#0c1527;
+      --text:#e8eefc;
+      --muted:#97a3b6;
+      --line:rgba(255,255,255,.10);
+      --focus:rgba(96,165,250,.40);
+      --btn:#15284a;
+      --btn2:#103a34;
+      --danger:#3b1320;
+      --radius:14px;
+      --shadow: 0 14px 40px rgba(0,0,0,.35);
+      --pad:14px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(900px 600px at 10% 0%, rgba(96,165,250,.18), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(94,234,212,.12), transparent 55%),
+        var(--bg);
+      color:var(--text);
+    }
+
+    /* Top bar */
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(11,18,32,.92), rgba(11,18,32,.72));
+      border-bottom:1px solid var(--line);
+    }
+    .topbar .inner{
+      max-width:1200px;
+      margin:0 auto;
+      padding:12px 14px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:2px;
+      min-width:200px;
+    }
+    .brand b{ font-size:14px; letter-spacing:.2px; }
+    .brand span{ font-size:12px; color:var(--muted); }
+
+    .selector{
+      flex:1;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      min-width:280px;
+    }
+
+    /* Layout */
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:14px;
+      display:grid;
+      grid-template-columns: 420px 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .wrap{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid var(--line);
+      background: rgba(12,21,39,.55);
+    }
+    .card .hd b{ font-size:13px; letter-spacing:.2px; }
+    .card .bd{ padding:14px; }
+
+    /* Inputs */
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:0 0 6px;
+    }
+    input, select, textarea, button{
+      width:100%;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(10,18,34,.55);
+      color:var(--text);
+      padding:11px 11px;
+      outline:none;
+      font-size:14px;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: var(--focus);
+      box-shadow: 0 0 0 3px rgba(96,165,250,.12);
+    }
+    textarea{ min-height:92px; resize:vertical; }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){
+      .grid2{ grid-template-columns: 1fr; }
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .row > *{ flex:1; }
+
+    /* Buttons */
+    .btn{
+      border:1px solid rgba(255,255,255,.12);
+      background: linear-gradient(180deg, rgba(21,40,74,.9), rgba(21,40,74,.6));
+      cursor:pointer;
+      font-weight:650;
+    }
+    .btn:hover{ filter:brightness(1.06); }
+    .btn.secondary{
+      background: linear-gradient(180deg, rgba(16,58,52,.95), rgba(16,58,52,.65));
+    }
+    .btn.danger{
+      background: linear-gradient(180deg, rgba(59,19,32,.95), rgba(59,19,32,.65));
+    }
+    .btn.ghost{
+      background: rgba(10,18,34,.35);
+    }
+    .btn.small{
+      padding:8px 10px;
+      font-size:13px;
+      border-radius:10px;
+      width:auto;
+      min-width:92px;
+      white-space:nowrap;
+    }
+
+    /* Tables */
+    .table{
+      width:100%;
+      border-collapse: collapse;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background: rgba(10,18,34,.35);
+    }
+    .table th, .table td{
+      border-bottom:1px solid rgba(255,255,255,.08);
+      padding:10px 10px;
+      font-size:13px;
+      vertical-align:top;
+    }
+    .table th{
+      font-size:12px;
+      color:var(--muted);
+      text-align:left;
+      background: rgba(12,21,39,.55);
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+    .table tr:last-child td{ border-bottom:none; }
+    .right{ text-align:right; }
+    .muted{ color:var(--muted); }
+    .mini{ font-size:12px; color:rgba(151,163,182,.90); margin-top:2px; }
+
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 720px){
+      .split{ grid-template-columns: 1fr; }
+    }
+
+    /* KPI */
+    .kpis{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){
+      .kpis{ grid-template-columns: 1fr; }
+    }
+    .kpi{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background: rgba(10,18,34,.35);
+      padding:12px;
+    }
+    .kpi .t{ font-size:12px; color:var(--muted); }
+    .kpi .v{ font-size:18px; font-weight:850; margin-top:6px; }
+
+    .divider{ height:1px; background:rgba(255,255,255,.08); margin:12px 0; }
+
+    /* Tight controls */
+    .tight input, .tight select{ padding:10px 11px; }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <div class="brand">
+        <b>Costeo BOM</b>
+        <span>Materia prima → Producto final</span>
+      </div>
+
+      <div class="selector tight">
+        <select id="pfSelect" aria-label="Producto"></select>
+        <button class="btn small ghost" id="btnNewPF" type="button">Nuevo</button>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn small ghost" id="btnExport" type="button">Exportar</button>
+        <button class="btn small ghost" id="btnImport" type="button">Importar</button>
+        <button class="btn small danger" id="btnWipe" type="button">Borrar todo</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <!-- Left column: Materias primas -->
+    <section class="card">
+      <div class="hd">
+        <b>Materias primas</b>
+        <span class="muted" style="font-size:12px;">Catálogo</span>
+      </div>
+      <div class="bd">
+        <div class="grid2 tight">
+          <div>
+            <label>Código</label>
+            <input id="mpCode" placeholder="MP-APPLE" autocomplete="off"/>
+          </div>
+          <div>
+            <label>Costo unitario</label>
+            <input id="mpCost" type="number" step="0.01" placeholder="0.00"/>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Descripción</label>
+            <input id="mpDesc" placeholder="Manzana verde (pieza)" autocomplete="off"/>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="btn secondary" id="btnAddMP" type="button">Guardar</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="max-height:420px; overflow:auto; border-radius:12px;">
+          <table class="table" id="mpTable">
+            <thead>
+              <tr>
+                <th style="width:140px;">Código</th>
+                <th>Descripción</th>
+                <th class="right" style="width:130px;">Costo</th>
+                <th class="right" style="width:90px;">Acción</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="mini">
+          Sugerencia: define el costo unitario por la unidad que uses (pieza / gramo / ml) y usa la misma unidad en la receta.
+        </div>
+      </div>
+    </section>
+
+    <!-- Right column: Producto + receta -->
+    <section class="card">
+      <div class="hd">
+        <b>Producto y receta</b>
+        <span class="muted" style="font-size:12px;" id="pfHint">—</span>
+      </div>
+      <div class="bd">
+
+        <div class="split tight">
+          <div>
+            <label>Código del producto</label>
+            <input id="pfCode" placeholder="PF-MANZANA" autocomplete="off"/>
+          </div>
+          <div>
+            <label>Piezas del día</label>
+            <input id="pfDailyQty" type="number" step="1" placeholder="0"/>
+          </div>
+          <div style="grid-column:1/-1">
+            <label>Descripción</label>
+            <input id="pfDesc" placeholder="Manzana preparada" autocomplete="off"/>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="btn" id="btnSavePF" type="button">Guardar producto</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="t">Costo unitario</div>
+            <div class="v" id="kpiUnit">$0.00</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Costo total del día</div>
+            <div class="v" id="kpiDay">$0.00</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row tight">
+          <div style="min-width:240px;">
+            <label>Materia prima</label>
+            <select id="recipeMP"></select>
+          </div>
+          <div style="min-width:140px;">
+            <label>Cantidad</label>
+            <input id="recipeQty" type="number" step="0.01" placeholder="0"/>
+          </div>
+          <div style="min-width:240px;">
+            <label>Nota</label>
+            <input id="recipeNote" placeholder="opcional" autocomplete="off"/>
+          </div>
+          <div style="min-width:140px;">
+            <label>&nbsp;</label>
+            <button class="btn secondary" id="btnAddLine" type="button">Agregar</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px; max-height:380px; overflow:auto; border-radius:12px;">
+          <table class="table" id="recipeTable">
+            <thead>
+              <tr>
+                <th>Insumo</th>
+                <th class="right" style="width:110px;">Cant.</th>
+                <th class="right" style="width:130px;">Costo</th>
+                <th>Nota</th>
+                <th class="right" style="width:90px;">Acción</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="divider"></div>
+
+        <label>Respaldo (JSON)</label>
+        <textarea id="jsonBox" placeholder="Exportar genera un respaldo aquí. Importar pega aquí y aplica."></textarea>
+      </div>
+    </section>
+  </main>
+
+<script>
+(() => {
+  // ---------------- IndexedDB (persistencia confiable) ----------------
+  const DB_NAME = "costeo_bom_db_pro";
+  const DB_VER  = 1;
+  const STORE   = "state";
+  const KEY     = "APP";
+
+  function openDB(){
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VER);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if(!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+  async function dbGet(k){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, "readonly");
+      const st = tx.objectStore(STORE);
+      const r  = st.get(k);
+      r.onsuccess = () => resolve(r.result);
+      r.onerror   = () => reject(r.error);
+      tx.oncomplete = () => db.close();
+    });
+  }
+  async function dbSet(k, v){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, "readwrite");
+      const st = tx.objectStore(STORE);
+      const r  = st.put(v, k);
+      r.onsuccess = () => resolve(true);
+      r.onerror   = () => reject(r.error);
+      tx.oncomplete = () => db.close();
+    });
+  }
+  async function dbClear(){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE, "readwrite");
+      const st = tx.objectStore(STORE);
+      const r  = st.clear();
+      r.onsuccess = () => resolve(true);
+      r.onerror   = () => reject(r.error);
+      tx.oncomplete = () => db.close();
+    });
+  }
+
+  // ---------------- State ----------------
+  const state = { mp: [], products: [], selected: "" };
+
+  const $ = (id) => document.getElementById(id);
+  const money = (n) => Number(n||0).toLocaleString("es-MX", {style:"currency", currency:"MXN"});
+  const norm  = (s) => String(s||"").trim();
+
+  function findMP(code){ return state.mp.find(x => x.code === code); }
+  function findPF(code){ return state.products.find(p => p.code === code); }
+  function selPF(){ return state.selected ? findPF(state.selected) : null; }
+
+  function safeText(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  async function load(){
+    const saved = await dbGet(KEY);
+    if(saved && typeof saved === "object"){
+      state.mp = Array.isArray(saved.mp) ? saved.mp : [];
+      state.products = Array.isArray(saved.products) ? saved.products : [];
+      state.selected = saved.selected || "";
+    }
+  }
+  async function save(){
+    await dbSet(KEY, { mp: state.mp, products: state.products, selected: state.selected });
+  }
+
+  // ---------------- Render ----------------
+  function renderAll(){
+    renderPFSelect();
+    renderMPSelectForRecipe();
+    renderMPTable();
+    renderPFForm();
+    renderRecipe();
+    renderTotals();
+  }
+
+  function renderPFSelect(){
+    const s = $("pfSelect");
+    s.innerHTML = "";
+
+    const opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = state.products.length ? "Seleccionar producto…" : "Sin productos";
+    s.appendChild(opt0);
+
+    state.products
+      .slice().sort((a,b)=>a.code.localeCompare(b.code))
+      .forEach(p=>{
+        const o = document.createElement("option");
+        o.value = p.code;
+        o.textContent = `${p.code} — ${p.desc || ""}`.trim();
+        if(p.code === state.selected) o.selected = true;
+        s.appendChild(o);
+      });
+
+    s.onchange = async () => {
+      state.selected = s.value;
+      await save();
+      renderAll();
+    };
+  }
+
+  function renderPFForm(){
+    const p = selPF();
+    $("pfHint").textContent = p ? p.code : "—";
+
+    $("pfCode").value = p ? p.code : "";
+    $("pfDesc").value = p ? (p.desc || "") : "";
+    $("pfDailyQty").value = p ? (p.dailyQty ?? 0) : 0;
+  }
+
+  function renderMPSelectForRecipe(){
+    const s = $("recipeMP");
+    s.innerHTML = "";
+    if(!state.mp.length){
+      const o = document.createElement("option");
+      o.value = "";
+      o.textContent = "Agrega materias primas…";
+      s.appendChild(o);
+      s.disabled = true;
+      return;
+    }
+    s.disabled = false;
+    state.mp
+      .slice().sort((a,b)=>a.code.localeCompare(b.code))
+      .forEach(mp=>{
+        const o = document.createElement("option");
+        o.value = mp.code;
+        o.textContent = `${mp.code} — ${mp.desc}`;
+        s.appendChild(o);
+      });
+  }
+
+  function renderMPTable(){
+    const tb = $("mpTable").querySelector("tbody");
+    tb.innerHTML = "";
+
+    const rows = state.mp.slice().sort((a,b)=>a.code.localeCompare(b.code));
+    if(!rows.length){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="4" class="muted">Sin materias primas</td>`;
+      tb.appendChild(tr);
+      return;
+    }
+
+    rows.forEach(mp=>{
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><b>${safeText(mp.code)}</b></td>
+        <td>${safeText(mp.desc)}</td>
+        <td class="right">${money(mp.cost)}</td>
+        <td class="right">
+          <button class="btn small ghost" data-edit="${safeText(mp.code)}" type="button">Editar</button>
+          <button class="btn small danger" data-del="${safeText(mp.code)}" type="button">X</button>
+        </td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll("[data-del]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const code = btn.getAttribute("data-del");
+        // eliminar y quitar de recetas
+        state.mp = state.mp.filter(x => x.code !== code);
+        state.products.forEach(p=>{
+          p.recipe = (p.recipe || []).filter(r => r.mpCode !== code);
+        });
+        await save();
+        renderAll();
+      });
+    });
+
+    tb.querySelectorAll("[data-edit]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const code = btn.getAttribute("data-edit");
+        const mp = findMP(code);
+        if(!mp) return;
+        $("mpCode").value = mp.code;
+        $("mpDesc").value = mp.desc;
+        $("mpCost").value = mp.cost;
+        $("mpCode").focus();
+      });
+    });
+  }
+
+  function renderRecipe(){
+    const tb = $("recipeTable").querySelector("tbody");
+    tb.innerHTML = "";
+
+    const p = selPF();
+    if(!p){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="5" class="muted">Selecciona o crea un producto</td>`;
+      tb.appendChild(tr);
+      return;
+    }
+
+    const recipe = (p.recipe || []);
+    if(!recipe.length){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="5" class="muted">Sin receta</td>`;
+      tb.appendChild(tr);
+      return;
+    }
+
+    recipe.forEach((r, idx)=>{
+      const mp = findMP(r.mpCode);
+      const qty = Number(r.qty||0);
+      const cost = (mp ? Number(mp.cost||0) : 0) * qty;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <b>${safeText(r.mpCode)}</b>
+          <div class="mini">${safeText(mp ? mp.desc : "")}</div>
+        </td>
+        <td class="right">${qty.toLocaleString("es-MX",{maximumFractionDigits:4})}</td>
+        <td class="right">${money(cost)}</td>
+        <td>${safeText(r.note || "")}</td>
+        <td class="right">
+          <button class="btn small danger" data-rdel="${idx}" type="button">X</button>
+        </td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll("[data-rdel]").forEach(btn=>{
+      btn.addEventListener("click", async ()=>{
+        const idx = Number(btn.getAttribute("data-rdel"));
+        const p = selPF();
+        if(!p) return;
+        p.recipe = (p.recipe || []);
+        if(idx >= 0 && idx < p.recipe.length) p.recipe.splice(idx, 1);
+        await save();
+        renderAll();
+      });
+    });
+  }
+
+  function calcUnitCost(p){
+    if(!p) return 0;
+    let sum = 0;
+    (p.recipe||[]).forEach(r=>{
+      const mp = findMP(r.mpCode);
+      const qty = Number(r.qty||0);
+      const c = (mp ? Number(mp.cost||0) : 0);
+      sum += qty * c;
+    });
+    return sum;
+  }
+
+  function renderTotals(){
+    const p = selPF();
+    const unit = calcUnitCost(p);
+    const dayQty = p ? Number(p.dailyQty||0) : 0;
+
+    $("kpiUnit").textContent = money(unit);
+    $("kpiDay").textContent  = money(unit * dayQty);
+  }
+
+  // ---------------- Actions ----------------
+  $("btnAddMP").addEventListener("click", async ()=>{
+    const code = norm($("mpCode").value);
+    const desc = norm($("mpDesc").value);
+    const cost = Number($("mpCost").value);
+
+    if(!code || !desc || !(cost >= 0)) return;
+
+    const exists = findMP(code);
+    if(exists){
+      exists.desc = desc;
+      exists.cost = cost;
+    }else{
+      state.mp.push({ code, desc, cost });
+    }
+
+    $("mpCode").value = "";
+    $("mpDesc").value = "";
+    $("mpCost").value = "";
+
+    await save();
+    renderAll();
+  });
+
+  $("btnNewPF").addEventListener("click", async ()=>{
+    state.selected = "";
+    await save();
+    renderAll();
+    $("pfCode").focus();
+  });
+
+  $("btnSavePF").addEventListener("click", async ()=>{
+    const code = norm($("pfCode").value);
+    const desc = norm($("pfDesc").value);
+    const dailyQty = Number($("pfDailyQty").value);
+
+    if(!code || !desc || !(dailyQty >= 0)) return;
+
+    let p = findPF(code);
+    if(!p){
+      p = { code, desc, dailyQty, recipe: [] };
+      state.products.push(p);
+    }else{
+      p.code = code;
+      p.desc = desc;
+      p.dailyQty = dailyQty;
+      p.recipe = p.recipe || [];
+    }
+
+    state.selected = code;
+    await save();
+    renderAll();
+  });
+
+  $("btnAddLine").addEventListener("click", async ()=>{
+    const p = selPF();
+    if(!p) return;
+
+    const mpCode = $("recipeMP").value;
+    const qty = Number($("recipeQty").value);
+    const note = norm($("recipeNote").value);
+
+    if(!mpCode || !(qty > 0)) return;
+
+    p.recipe = p.recipe || [];
+    const line = p.recipe.find(x => x.mpCode === mpCode);
+    if(line){
+      line.qty = Number(line.qty||0) + qty;
+      if(note) line.note = note;
+    }else{
+      p.recipe.push({ mpCode, qty, note });
+    }
+
+    $("recipeQty").value = "";
+    $("recipeNote").value = "";
+
+    await save();
+    renderAll();
+  });
+
+  $("btnWipe").addEventListener("click", async ()=>{
+    if(!confirm("Borrar todo en este dispositivo?")) return;
+    state.mp = [];
+    state.products = [];
+    state.selected = "";
+    await dbClear();
+    renderAll();
+  });
+
+  $("btnExport").addEventListener("click", ()=>{
+    $("jsonBox").value = JSON.stringify({ mp: state.mp, products: state.products, selected: state.selected }, null, 2);
+    $("jsonBox").focus();
+  });
+
+  $("btnImport").addEventListener("click", async ()=>{
+    const raw = $("jsonBox").value.trim();
+    if(!raw) return;
+    try{
+      const obj = JSON.parse(raw);
+      state.mp = Array.isArray(obj.mp) ? obj.mp : [];
+      state.products = Array.isArray(obj.products) ? obj.products : [];
+      state.selected = obj.selected || "";
+      await save();
+      renderAll();
+    }catch{
+      // Sin mensajes innecesarios
+    }
+  });
+
+  // ---------------- Init ----------------
+  (async ()=>{
+    await load();
+    renderAll();
+  })();
+})();
+</script>
+</body>
+</html>
