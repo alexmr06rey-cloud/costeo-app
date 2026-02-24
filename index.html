@@ -16,10 +16,18 @@
       --btn:#15284a;
       --btn2:#103a34;
       --danger:#3b1320;
+      --ok:#102a22;
+      --warn:#2a240f;
       --radius:14px;
       --shadow: 0 14px 40px rgba(0,0,0,.35);
       --pad:14px;
+
+      --red:#ff5a7a;
+      --amber:#ffd15a;
+      --green:#52ffb0;
+      --blue:#60a5fa;
     }
+
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -49,17 +57,37 @@
     }
     .brand{
       display:flex; flex-direction:column; gap:2px;
-      min-width:200px;
+      min-width:220px;
     }
     .brand b{ font-size:14px; letter-spacing:.2px; }
     .brand span{ font-size:12px; color:var(--muted); }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,18,34,.35);
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .dot{
+      width:9px; height:9px; border-radius:50%;
+      background: rgba(255,255,255,.25);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.05);
+    }
+    .dot.ok{ background: rgba(82,255,176,.85); box-shadow: 0 0 0 3px rgba(82,255,176,.12); }
+    .dot.warn{ background: rgba(255,209,90,.90); box-shadow: 0 0 0 3px rgba(255,209,90,.12); }
+    .dot.bad{ background: rgba(255,90,122,.90); box-shadow: 0 0 0 3px rgba(255,90,122,.12); }
 
     .selector{
       flex:1;
       display:flex;
       gap:10px;
       align-items:center;
-      min-width:280px;
+      min-width:300px;
     }
 
     /* Layout */
@@ -100,6 +128,7 @@
       color:var(--muted);
       margin:0 0 6px;
     }
+    .field{ position:relative; }
     input, select, textarea, button{
       width:100%;
       border-radius:12px;
@@ -116,6 +145,34 @@
     }
     textarea{ min-height:92px; resize:vertical; }
 
+    .prefix{
+      position:absolute;
+      top:34px;
+      left:11px;
+      color:rgba(151,163,182,.85);
+      font-size:13px;
+      pointer-events:none;
+    }
+    .has-prefix input{ padding-left:28px; }
+
+    .help{
+      margin-top:6px;
+      font-size:12px;
+      color:rgba(151,163,182,.85);
+    }
+    .err{
+      margin-top:6px;
+      font-size:12px;
+      color: rgba(255,90,122,.95);
+      display:none;
+    }
+
+    .invalid input, .invalid select, .invalid textarea{
+      border-color: rgba(255,90,122,.55);
+      box-shadow: 0 0 0 3px rgba(255,90,122,.10);
+    }
+    .invalid .err{ display:block; }
+
     .grid2{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -124,11 +181,11 @@
     @media (max-width: 520px){
       .grid2{ grid-template-columns: 1fr; }
     }
-
     .row{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
+      align-items:flex-end;
     }
     .row > *{ flex:1; }
 
@@ -156,6 +213,11 @@
       width:auto;
       min-width:92px;
       white-space:nowrap;
+    }
+    .btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      filter:none;
     }
 
     /* Tables */
@@ -210,14 +272,75 @@
       border-radius:12px;
       background: rgba(10,18,34,.35);
       padding:12px;
+      position:relative;
+      overflow:hidden;
+    }
+    .kpi:before{
+      content:"";
+      position:absolute; inset:-40% -40% auto auto;
+      width:140px; height:140px;
+      background: radial-gradient(circle at 30% 30%, rgba(96,165,250,.22), transparent 60%);
+      transform: rotate(12deg);
+      pointer-events:none;
     }
     .kpi .t{ font-size:12px; color:var(--muted); }
     .kpi .v{ font-size:18px; font-weight:850; margin-top:6px; }
+    .kpi .sub{ margin-top:6px; font-size:12px; color:rgba(151,163,182,.9); }
 
     .divider{ height:1px; background:rgba(255,255,255,.08); margin:12px 0; }
 
     /* Tight controls */
     .tight input, .tight select{ padding:10px 11px; }
+    .tight .has-prefix input{ padding-left:28px; }
+
+    /* Toast */
+    .toastHost{
+      position:fixed;
+      right:14px;
+      bottom:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index:999;
+      max-width: calc(100vw - 28px);
+    }
+    .toast{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(10,18,34,.90);
+      backdrop-filter: blur(10px);
+      border-radius:14px;
+      box-shadow: 0 14px 40px rgba(0,0,0,.45);
+      padding:12px 12px;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      animation: pop .18s ease-out;
+    }
+    @keyframes pop{ from{ transform: translateY(10px); opacity:0; } to{ transform: translateY(0); opacity:1; } }
+    .toast .ic{
+      width:32px; height:32px; border-radius:10px;
+      display:grid; place-items:center;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      flex:0 0 auto;
+      font-weight:900;
+    }
+    .toast.ok  .ic{ background: rgba(82,255,176,.10); border-color: rgba(82,255,176,.22); color: var(--green); }
+    .toast.warn .ic{ background: rgba(255,209,90,.10); border-color: rgba(255,209,90,.22); color: var(--amber); }
+    .toast.bad .ic{ background: rgba(255,90,122,.10); border-color: rgba(255,90,122,.22); color: var(--red); }
+    .toast .tt{ font-weight:800; font-size:13px; }
+    .toast .tx{ font-size:12px; color: rgba(151,163,182,.92); margin-top:2px; }
+    .toast .x{
+      margin-left:auto;
+      background:transparent;
+      border: none;
+      color: rgba(151,163,182,.9);
+      width:auto;
+      padding:4px 6px;
+      cursor:pointer;
+      font-size:16px;
+      line-height:1;
+    }
   </style>
 </head>
 
@@ -227,6 +350,11 @@
       <div class="brand">
         <b>Costeo BOM</b>
         <span>Materia prima → Producto final</span>
+      </div>
+
+      <div class="pill" id="statusPill" title="Estado del producto">
+        <span class="dot warn" id="statusDot"></span>
+        <span id="statusText">Sin producto seleccionado</span>
       </div>
 
       <div class="selector tight">
@@ -251,22 +379,26 @@
       </div>
       <div class="bd">
         <div class="grid2 tight">
-          <div>
-            <label>Código</label>
+          <div class="field" id="f_mpCode">
+            <label>Código *</label>
             <input id="mpCode" placeholder="MP-APPLE" autocomplete="off"/>
+            <div class="err">Campo obligatorio.</div>
           </div>
-          <div>
-            <label>Costo unitario</label>
-            <input id="mpCost" type="number" step="0.01" placeholder="0.00"/>
+          <div class="field has-prefix" id="f_mpCost">
+            <label>Costo unitario *</label>
+            <span class="prefix">$</span>
+            <input id="mpCost" type="number" step="0.01" placeholder="0.00" inputmode="decimal"/>
+            <div class="err">Captura un costo válido (≥ 0).</div>
           </div>
-          <div style="grid-column:1/-1">
-            <label>Descripción</label>
+          <div class="field" style="grid-column:1/-1" id="f_mpDesc">
+            <label>Descripción *</label>
             <input id="mpDesc" placeholder="Manzana verde (pieza)" autocomplete="off"/>
+            <div class="err">Campo obligatorio.</div>
           </div>
         </div>
 
         <div class="row" style="margin-top:10px;">
-          <button class="btn secondary" id="btnAddMP" type="button">Guardar</button>
+          <button class="btn secondary" id="btnAddMP" type="button">Guardar materia prima</button>
         </div>
 
         <div class="divider"></div>
@@ -278,7 +410,7 @@
                 <th style="width:140px;">Código</th>
                 <th>Descripción</th>
                 <th class="right" style="width:130px;">Costo</th>
-                <th class="right" style="width:90px;">Acción</th>
+                <th class="right" style="width:140px;">Acción</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -286,7 +418,7 @@
         </div>
 
         <div class="mini">
-          Sugerencia: define el costo unitario por la unidad que uses (pieza / gramo / ml) y usa la misma unidad en la receta.
+          Define el costo unitario por tu unidad (pieza / gramo / ml) y usa esa misma unidad en la receta.
         </div>
       </div>
     </section>
@@ -300,17 +432,20 @@
       <div class="bd">
 
         <div class="split tight">
-          <div>
-            <label>Código del producto</label>
+          <div class="field" id="f_pfCode">
+            <label>Código del producto *</label>
             <input id="pfCode" placeholder="PF-MANZANA" autocomplete="off"/>
+            <div class="err">Campo obligatorio.</div>
           </div>
-          <div>
-            <label>Piezas del día</label>
-            <input id="pfDailyQty" type="number" step="1" placeholder="0"/>
+          <div class="field" id="f_pfDailyQty">
+            <label>Piezas del día *</label>
+            <input id="pfDailyQty" type="number" step="1" placeholder="0" inputmode="numeric"/>
+            <div class="err">Captura una cantidad válida (≥ 0).</div>
           </div>
-          <div style="grid-column:1/-1">
-            <label>Descripción</label>
+          <div class="field" style="grid-column:1/-1" id="f_pfDesc">
+            <label>Descripción *</label>
             <input id="pfDesc" placeholder="Manzana preparada" autocomplete="off"/>
+            <div class="err">Campo obligatorio.</div>
           </div>
         </div>
 
@@ -322,33 +457,62 @@
 
         <div class="kpis">
           <div class="kpi">
-            <div class="t">Costo unitario</div>
+            <div class="t">Costo de producción (unitario)</div>
             <div class="v" id="kpiUnit">$0.00</div>
+            <div class="sub" id="kpiUnitSub">—</div>
           </div>
           <div class="kpi">
-            <div class="t">Costo total del día</div>
+            <div class="t">Costo total del día (producción)</div>
             <div class="v" id="kpiDay">$0.00</div>
+            <div class="sub" id="kpiDaySub">—</div>
           </div>
         </div>
 
         <div class="divider"></div>
 
+        <!-- Venta -->
+        <div class="split tight">
+          <div class="field" id="f_margin">
+            <label>Margen de ganancia (%)</label>
+            <input id="pfMargin" type="number" step="1" placeholder="40" inputmode="numeric"/>
+            <div class="help">Por defecto 40%. Puedes cambiarlo.</div>
+          </div>
+          <div class="field has-prefix" id="f_sellPrice">
+            <label>Precio de venta (unitario)</label>
+            <span class="prefix">$</span>
+            <input id="pfSellPrice" type="number" step="0.01" placeholder="0.00" inputmode="decimal"/>
+            <div class="help">Puedes editarlo. Si no lo tocas, se calcula con el margen.</div>
+          </div>
+          <div class="field has-prefix" style="grid-column:1/-1" id="f_sellDay">
+            <label>Venta total del día</label>
+            <span class="prefix">$</span>
+            <input id="pfSellDay" type="number" step="0.01" placeholder="0.00" inputmode="decimal" disabled />
+            <div class="help">Automático: precio venta × piezas del día.</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Receta -->
         <div class="row tight">
-          <div style="min-width:240px;">
-            <label>Materia prima</label>
+          <div class="field" style="min-width:240px;" id="f_recipeMP">
+            <label>Materia prima *</label>
             <select id="recipeMP"></select>
+            <div class="err">Selecciona una materia prima.</div>
           </div>
-          <div style="min-width:140px;">
-            <label>Cantidad</label>
-            <input id="recipeQty" type="number" step="0.01" placeholder="0"/>
+          <div class="field" style="min-width:140px;" id="f_recipeQty">
+            <label>Cantidad *</label>
+            <input id="recipeQty" type="number" step="0.01" placeholder="0" inputmode="decimal"/>
+            <div class="err">Captura una cantidad > 0.</div>
           </div>
-          <div style="min-width:240px;">
+          <div class="field" style="min-width:240px;">
             <label>Nota</label>
             <input id="recipeNote" placeholder="opcional" autocomplete="off"/>
+            <div class="help">Ej: “chamoy”, “gomitas mixtas”.</div>
           </div>
-          <div style="min-width:140px;">
+          <div style="min-width:160px;">
             <label>&nbsp;</label>
-            <button class="btn secondary" id="btnAddLine" type="button">Agregar</button>
+            <button class="btn secondary" id="btnAddLine" type="button">Agregar a receta</button>
           </div>
         </div>
 
@@ -370,16 +534,18 @@
         <div class="divider"></div>
 
         <label>Respaldo (JSON)</label>
-        <textarea id="jsonBox" placeholder="Exportar genera un respaldo aquí. Importar pega aquí y aplica."></textarea>
+        <textarea id="jsonBox" placeholder="Exportar genera un respaldo aquí. Importar: pega aquí y aplica."></textarea>
       </div>
     </section>
   </main>
+
+  <div class="toastHost" id="toastHost"></div>
 
 <script>
 (() => {
   // ---------------- IndexedDB (persistencia confiable) ----------------
   const DB_NAME = "costeo_bom_db_pro";
-  const DB_VER  = 1;
+  const DB_VER  = 2; // subimos versión por nuevos campos
   const STORE   = "state";
   const KEY     = "APP";
 
@@ -428,16 +594,11 @@
     });
   }
 
-  // ---------------- State ----------------
-  const state = { mp: [], products: [], selected: "" };
-
+  // ---------------- Helpers ----------------
   const $ = (id) => document.getElementById(id);
-  const money = (n) => Number(n||0).toLocaleString("es-MX", {style:"currency", currency:"MXN"});
   const norm  = (s) => String(s||"").trim();
-
-  function findMP(code){ return state.mp.find(x => x.code === code); }
-  function findPF(code){ return state.products.find(p => p.code === code); }
-  function selPF(){ return state.selected ? findPF(state.selected) : null; }
+  const money = (n) => Number(n||0).toLocaleString("es-MX", {style:"currency", currency:"MXN"});
+  const round2 = (n) => Math.round((Number(n||0) + Number.EPSILON) * 100) / 100;
 
   function safeText(s){
     return String(s ?? "")
@@ -448,6 +609,47 @@
       .replaceAll("'","&#039;");
   }
 
+  // Toast
+  function toast(type, title, text, ms=2600){
+    const host = $("toastHost");
+    const el = document.createElement("div");
+    el.className = `toast ${type}`;
+    const icon = type === "ok" ? "✓" : type === "warn" ? "!" : "×";
+    el.innerHTML = `
+      <div class="ic">${icon}</div>
+      <div>
+        <div class="tt">${safeText(title)}</div>
+        <div class="tx">${safeText(text)}</div>
+      </div>
+      <button class="x" type="button" aria-label="Cerrar">✕</button>
+    `;
+    host.appendChild(el);
+    const kill = () => { el.remove(); };
+    el.querySelector(".x").addEventListener("click", kill);
+    setTimeout(kill, ms);
+  }
+
+  // Validation UI helpers
+  function setInvalid(fieldId, on, msg){
+    const f = $(fieldId);
+    if(!f) return;
+    f.classList.toggle("invalid", !!on);
+    if(msg){
+      const err = f.querySelector(".err");
+      if(err) err.textContent = msg;
+    }
+  }
+  function clearInvalidAll(){
+    ["f_mpCode","f_mpCost","f_mpDesc","f_pfCode","f_pfDailyQty","f_pfDesc","f_recipeMP","f_recipeQty"].forEach(id=>setInvalid(id,false));
+  }
+
+  // ---------------- State ----------------
+  const state = { mp: [], products: [], selected: "" };
+
+  function findMP(code){ return state.mp.find(x => x.code === code); }
+  function findPF(code){ return state.products.find(p => p.code === code); }
+  function selPF(){ return state.selected ? findPF(state.selected) : null; }
+
   async function load(){
     const saved = await dbGet(KEY);
     if(saved && typeof saved === "object"){
@@ -455,9 +657,50 @@
       state.products = Array.isArray(saved.products) ? saved.products : [];
       state.selected = saved.selected || "";
     }
+    // Backfill nuevos campos (si ya existían productos antiguos)
+    state.products.forEach(p=>{
+      if(p.marginPct == null) p.marginPct = 40;
+      if(p.sellPrice == null) p.sellPrice = null; // null = auto
+      if(p.recipe == null) p.recipe = [];
+      if(p.dailyQty == null) p.dailyQty = 0;
+      if(p.desc == null) p.desc = "";
+    });
   }
   async function save(){
     await dbSet(KEY, { mp: state.mp, products: state.products, selected: state.selected });
+  }
+
+  // ---------------- Calculations ----------------
+  function calcUnitCost(p){
+    if(!p) return 0;
+    let sum = 0;
+    (p.recipe||[]).forEach(r=>{
+      const mp = findMP(r.mpCode);
+      const qty = Number(r.qty||0);
+      const c = (mp ? Number(mp.cost||0) : 0);
+      sum += qty * c;
+    });
+    return round2(sum);
+  }
+
+  function calcSellPrice(p){
+    if(!p) return 0;
+    const unit = calcUnitCost(p);
+    const pct = Number(p.marginPct ?? 40);
+    const auto = round2(unit * (1 + (pct/100)));
+    const manual = Number(p.sellPrice);
+    // si manual es válido (>=0), usar manual, si no auto
+    if(Number.isFinite(manual) && manual >= 0) return round2(manual);
+    return auto;
+  }
+
+  function statusForProduct(p){
+    if(!p) return { dot:"warn", text:"Sin producto seleccionado" };
+    const hasRecipe = (p.recipe||[]).length > 0;
+    const unit = calcUnitCost(p);
+    if(!hasRecipe) return { dot:"warn", text:`${p.code} — sin receta` };
+    if(unit <= 0) return { dot:"warn", text:`${p.code} — revisa costos` };
+    return { dot:"ok", text:`${p.code} — listo` };
   }
 
   // ---------------- Render ----------------
@@ -467,7 +710,16 @@
     renderMPTable();
     renderPFForm();
     renderRecipe();
-    renderTotals();
+    renderTotalsAndSell();
+    renderStatus();
+    syncButtons();
+  }
+
+  function renderStatus(){
+    const p = selPF();
+    const st = statusForProduct(p);
+    $("statusDot").className = `dot ${st.dot}`;
+    $("statusText").textContent = st.text;
   }
 
   function renderPFSelect(){
@@ -503,6 +755,13 @@
     $("pfCode").value = p ? p.code : "";
     $("pfDesc").value = p ? (p.desc || "") : "";
     $("pfDailyQty").value = p ? (p.dailyQty ?? 0) : 0;
+
+    $("pfMargin").value = p ? (p.marginPct ?? 40) : 40;
+
+    // si es null => mostrar vacío (auto)
+    $("pfSellPrice").value = p
+      ? (p.sellPrice == null ? "" : Number(p.sellPrice))
+      : "";
   }
 
   function renderMPSelectForRecipe(){
@@ -556,13 +815,13 @@
     tb.querySelectorAll("[data-del]").forEach(btn=>{
       btn.addEventListener("click", async ()=>{
         const code = btn.getAttribute("data-del");
-        // eliminar y quitar de recetas
         state.mp = state.mp.filter(x => x.code !== code);
         state.products.forEach(p=>{
           p.recipe = (p.recipe || []).filter(r => r.mpCode !== code);
         });
         await save();
         renderAll();
+        toast("ok","Actualizado","Materia prima eliminada y removida de recetas.");
       });
     });
 
@@ -575,6 +834,7 @@
         $("mpDesc").value = mp.desc;
         $("mpCost").value = mp.cost;
         $("mpCode").focus();
+        toast("warn","Edición","Modifica y vuelve a guardar la materia prima.");
       });
     });
   }
@@ -602,7 +862,7 @@
     recipe.forEach((r, idx)=>{
       const mp = findMP(r.mpCode);
       const qty = Number(r.qty||0);
-      const cost = (mp ? Number(mp.cost||0) : 0) * qty;
+      const cost = round2((mp ? Number(mp.cost||0) : 0) * qty);
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -629,45 +889,113 @@
         if(idx >= 0 && idx < p.recipe.length) p.recipe.splice(idx, 1);
         await save();
         renderAll();
+        toast("ok","Actualizado","Línea eliminada de la receta.");
       });
     });
   }
 
-  function calcUnitCost(p){
-    if(!p) return 0;
-    let sum = 0;
-    (p.recipe||[]).forEach(r=>{
-      const mp = findMP(r.mpCode);
-      const qty = Number(r.qty||0);
-      const c = (mp ? Number(mp.cost||0) : 0);
-      sum += qty * c;
-    });
-    return sum;
-  }
-
-  function renderTotals(){
+  function renderTotalsAndSell(){
     const p = selPF();
     const unit = calcUnitCost(p);
     const dayQty = p ? Number(p.dailyQty||0) : 0;
+    const prodDay = round2(unit * dayQty);
 
     $("kpiUnit").textContent = money(unit);
-    $("kpiDay").textContent  = money(unit * dayQty);
+    $("kpiDay").textContent  = money(prodDay);
+
+    $("kpiUnitSub").textContent = p
+      ? `Receta: ${(p.recipe||[]).length} insumo(s)`
+      : "—";
+
+    $("kpiDaySub").textContent = p
+      ? `Piezas del día: ${dayQty.toLocaleString("es-MX")}`
+      : "—";
+
+    const sellUnit = calcSellPrice(p);
+    const sellDay = round2(sellUnit * dayQty);
+
+    // render venta (inputs)
+    $("pfSellDay").value = (p ? sellDay : 0).toFixed(2);
+    // si no hay producto seleccionado, dejamos sellPrice vacío
+    if(!p){
+      $("pfSellPrice").value = "";
+      $("pfMargin").value = 40;
+    }
   }
 
-  // ---------------- Actions ----------------
-  $("btnAddMP").addEventListener("click", async ()=>{
+  function syncButtons(){
+    // Deshabilitar agregar receta si no hay producto
+    const p = selPF();
+    $("btnAddLine").disabled = !p || !state.mp.length;
+  }
+
+  // ---------------- Validation ----------------
+  function validateMP(){
+    clearInvalidAll();
     const code = norm($("mpCode").value);
     const desc = norm($("mpDesc").value);
     const cost = Number($("mpCost").value);
 
-    if(!code || !desc || !(cost >= 0)) return;
+    let ok = true;
+    if(!code){ setInvalid("f_mpCode", true); ok=false; }
+    if(!desc){ setInvalid("f_mpDesc", true); ok=false; }
+    if(!(Number.isFinite(cost) && cost >= 0)){ setInvalid("f_mpCost", true, "Captura un costo válido (≥ 0)."); ok=false; }
+
+    if(!ok) toast("bad","Faltan datos","Completa los campos obligatorios de materia prima.");
+    return ok;
+  }
+
+  function validatePF(){
+    clearInvalidAll();
+    const code = norm($("pfCode").value);
+    const desc = norm($("pfDesc").value);
+    const dailyQty = Number($("pfDailyQty").value);
+
+    let ok = true;
+    if(!code){ setInvalid("f_pfCode", true); ok=false; }
+    if(!desc){ setInvalid("f_pfDesc", true); ok=false; }
+    if(!(Number.isFinite(dailyQty) && dailyQty >= 0)){ setInvalid("f_pfDailyQty", true, "Captura una cantidad válida (≥ 0)."); ok=false; }
+
+    if(!ok) toast("bad","Faltan datos","Completa los campos obligatorios del producto.");
+    return ok;
+  }
+
+  function validateRecipeLine(){
+    clearInvalidAll();
+    const p = selPF();
+    let ok = true;
+
+    if(!p){
+      toast("bad","Sin producto","Selecciona o crea un producto para agregar receta.");
+      return false;
+    }
+
+    const mpCode = $("recipeMP").value;
+    const qty = Number($("recipeQty").value);
+
+    if(!mpCode){ setInvalid("f_recipeMP", true); ok=false; }
+    if(!(Number.isFinite(qty) && qty > 0)){ setInvalid("f_recipeQty", true); ok=false; }
+
+    if(!ok) toast("bad","Faltan datos","Selecciona materia prima y captura una cantidad > 0.");
+    return ok;
+  }
+
+  // ---------------- Actions ----------------
+  $("btnAddMP").addEventListener("click", async ()=>{
+    if(!validateMP()) return;
+
+    const code = norm($("mpCode").value);
+    const desc = norm($("mpDesc").value);
+    const cost = round2(Number($("mpCost").value));
 
     const exists = findMP(code);
     if(exists){
       exists.desc = desc;
       exists.cost = cost;
+      toast("ok","Guardado","Materia prima actualizada.");
     }else{
       state.mp.push({ code, desc, cost });
+      toast("ok","Guardado","Materia prima agregada.");
     }
 
     $("mpCode").value = "";
@@ -683,45 +1011,62 @@
     await save();
     renderAll();
     $("pfCode").focus();
+    toast("warn","Nuevo","Captura un nuevo producto y guárdalo.");
   });
 
   $("btnSavePF").addEventListener("click", async ()=>{
+    if(!validatePF()) return;
+
     const code = norm($("pfCode").value);
     const desc = norm($("pfDesc").value);
     const dailyQty = Number($("pfDailyQty").value);
 
-    if(!code || !desc || !(dailyQty >= 0)) return;
+    // margen / venta
+    const marginPct = Number($("pfMargin").value);
+    const sellPriceRaw = $("pfSellPrice").value.trim();
+    const sellPrice = sellPriceRaw === "" ? null : round2(Number(sellPriceRaw));
+
+    // validaciones suaves para margen/venta
+    const marginOk = Number.isFinite(marginPct) && marginPct >= 0 && marginPct <= 1000;
+    if(!marginOk){
+      toast("warn","Margen inválido","Usaré 40% por defecto.");
+    }
+    const sellOk = (sellPrice === null) || (Number.isFinite(sellPrice) && sellPrice >= 0);
+    if(!sellOk){
+      toast("warn","Precio inválido","Se calculará automáticamente con el margen.");
+    }
 
     let p = findPF(code);
     if(!p){
-      p = { code, desc, dailyQty, recipe: [] };
+      p = { code, desc, dailyQty, recipe: [], marginPct: marginOk ? marginPct : 40, sellPrice: sellOk ? sellPrice : null };
       state.products.push(p);
     }else{
       p.code = code;
       p.desc = desc;
       p.dailyQty = dailyQty;
       p.recipe = p.recipe || [];
+      p.marginPct = marginOk ? marginPct : (p.marginPct ?? 40);
+      p.sellPrice = sellOk ? sellPrice : null;
     }
 
     state.selected = code;
     await save();
     renderAll();
+    toast("ok","Guardado","Producto guardado correctamente.");
   });
 
   $("btnAddLine").addEventListener("click", async ()=>{
+    if(!validateRecipeLine()) return;
+
     const p = selPF();
-    if(!p) return;
-
     const mpCode = $("recipeMP").value;
-    const qty = Number($("recipeQty").value);
+    const qty = round2(Number($("recipeQty").value));
     const note = norm($("recipeNote").value);
-
-    if(!mpCode || !(qty > 0)) return;
 
     p.recipe = p.recipe || [];
     const line = p.recipe.find(x => x.mpCode === mpCode);
     if(line){
-      line.qty = Number(line.qty||0) + qty;
+      line.qty = round2(Number(line.qty||0) + qty);
       if(note) line.note = note;
     }else{
       p.recipe.push({ mpCode, qty, note });
@@ -732,6 +1077,7 @@
 
     await save();
     renderAll();
+    toast("ok","Agregado","Se agregó la línea a la receta.");
   });
 
   $("btnWipe").addEventListener("click", async ()=>{
@@ -741,25 +1087,56 @@
     state.selected = "";
     await dbClear();
     renderAll();
+    toast("ok","Listo","Se borró toda la información del dispositivo.");
   });
 
   $("btnExport").addEventListener("click", ()=>{
     $("jsonBox").value = JSON.stringify({ mp: state.mp, products: state.products, selected: state.selected }, null, 2);
     $("jsonBox").focus();
+    toast("ok","Exportado","Respaldo generado en JSON.");
   });
 
   $("btnImport").addEventListener("click", async ()=>{
     const raw = $("jsonBox").value.trim();
-    if(!raw) return;
+    if(!raw){
+      toast("warn","Vacío","Pega un JSON para importar.");
+      return;
+    }
     try{
       const obj = JSON.parse(raw);
       state.mp = Array.isArray(obj.mp) ? obj.mp : [];
       state.products = Array.isArray(obj.products) ? obj.products : [];
       state.selected = obj.selected || "";
+
+      // backfill
+      state.products.forEach(p=>{
+        if(p.marginPct == null) p.marginPct = 40;
+        if(p.sellPrice == null) p.sellPrice = null;
+        if(p.recipe == null) p.recipe = [];
+        if(p.dailyQty == null) p.dailyQty = 0;
+        if(p.desc == null) p.desc = "";
+      });
+
       await save();
       renderAll();
+      toast("ok","Importado","Datos aplicados correctamente.");
     }catch{
-      // Sin mensajes innecesarios
+      toast("bad","JSON inválido","Revisa el contenido del respaldo.");
+    }
+  });
+
+  // Auto-recalcular venta cuando cambia margen/precio/cantidad del día (sin guardar hasta que presione “Guardar producto”)
+  ["pfMargin","pfSellPrice","pfDailyQty"].forEach(id=>{
+    $(id).addEventListener("input", ()=>{
+      renderTotalsAndSell();
+    });
+  });
+
+  // Si el usuario borra el precio manual => vuelve a auto
+  $("pfSellPrice").addEventListener("blur", ()=>{
+    const v = $("pfSellPrice").value.trim();
+    if(v === ""){
+      renderTotalsAndSell();
     }
   });
 
