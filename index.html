@@ -7,27 +7,19 @@
   <style>
     :root{
       --bg:#0b1220;
-      --panel:#0f1a2e;
-      --panel2:#0c1527;
       --text:#e8eefc;
       --muted:#97a3b6;
       --line:rgba(255,255,255,.10);
       --focus:rgba(96,165,250,.40);
-      --btn:#15284a;
-      --btn2:#103a34;
-      --danger:#3b1320;
-      --ok:#102a22;
-      --warn:#2a240f;
-      --radius:14px;
+
+      --radius:16px;
       --shadow: 0 14px 40px rgba(0,0,0,.35);
-      --pad:14px;
 
       --red:#ff5a7a;
       --amber:#ffd15a;
       --green:#52ffb0;
       --blue:#60a5fa;
     }
-
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -57,7 +49,7 @@
     }
     .brand{
       display:flex; flex-direction:column; gap:2px;
-      min-width:220px;
+      min-width:230px;
     }
     .brand b{ font-size:14px; letter-spacing:.2px; }
     .brand span{ font-size:12px; color:var(--muted); }
@@ -94,10 +86,10 @@
     .wrap{
       max-width:1200px;
       margin:0 auto;
-      padding:14px;
+      padding:16px 14px 22px;
       display:grid;
       grid-template-columns: 420px 1fr;
-      gap:14px;
+      gap:16px;
     }
     @media (max-width: 980px){
       .wrap{ grid-template-columns: 1fr; }
@@ -111,15 +103,64 @@
       overflow:hidden;
     }
     .card .hd{
-      padding:12px 14px;
+      padding:14px 14px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       border-bottom:1px solid var(--line);
       background: rgba(12,21,39,.55);
     }
+    .hd-left{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .icon{
+      width:32px; height:32px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      display:grid;
+      place-items:center;
+      font-size:16px;
+      color: rgba(232,238,252,.92);
+    }
     .card .hd b{ font-size:13px; letter-spacing:.2px; }
     .card .bd{ padding:14px; }
+
+    /* Sections inside card */
+    .section{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(10,18,34,.30);
+      border-radius:14px;
+      padding:12px;
+      margin-bottom:12px;
+    }
+    .section:last-child{ margin-bottom:0; }
+    .section .shd{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .section .shd .ttl{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-weight:850;
+      letter-spacing:.2px;
+      font-size:13px;
+    }
+    .badge{
+      font-size:11px;
+      color: rgba(151,163,182,.95);
+      border:1px solid rgba(255,255,255,.12);
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
 
     /* Inputs */
     label{
@@ -169,7 +210,7 @@
 
     .invalid input, .invalid select, .invalid textarea{
       border-color: rgba(255,90,122,.55);
-      box-shadow: 0 0 0 3px rgba(255,90,122,.10);
+      box-shadow: 0  0 0 3px rgba(255,90,122,.10);
     }
     .invalid .err{ display:block; }
 
@@ -214,11 +255,7 @@
       min-width:92px;
       white-space:nowrap;
     }
-    .btn:disabled{
-      opacity:.45;
-      cursor:not-allowed;
-      filter:none;
-    }
+    .btn:disabled{ opacity:.45; cursor:not-allowed; filter:none; }
 
     /* Tables */
     .table{
@@ -249,16 +286,7 @@
     .muted{ color:var(--muted); }
     .mini{ font-size:12px; color:rgba(151,163,182,.90); margin-top:2px; }
 
-    .split{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    @media (max-width: 720px){
-      .split{ grid-template-columns: 1fr; }
-    }
-
-    /* KPI */
+    /* KPIs */
     .kpis{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -268,8 +296,8 @@
       .kpis{ grid-template-columns: 1fr; }
     }
     .kpi{
-      border:1px solid var(--line);
-      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
       background: rgba(10,18,34,.35);
       padding:12px;
       position:relative;
@@ -283,15 +311,9 @@
       transform: rotate(12deg);
       pointer-events:none;
     }
-    .kpi .t{ font-size:12px; color:var(--muted); }
-    .kpi .v{ font-size:18px; font-weight:850; margin-top:6px; }
+    .kpi .t{ font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
+    .kpi .v{ font-size:18px; font-weight:900; margin-top:6px; }
     .kpi .sub{ margin-top:6px; font-size:12px; color:rgba(151,163,182,.9); }
-
-    .divider{ height:1px; background:rgba(255,255,255,.08); margin:12px 0; }
-
-    /* Tight controls */
-    .tight input, .tight select{ padding:10px 11px; }
-    .tight .has-prefix input{ padding-left:28px; }
 
     /* Toast */
     .toastHost{
@@ -328,7 +350,7 @@
     .toast.ok  .ic{ background: rgba(82,255,176,.10); border-color: rgba(82,255,176,.22); color: var(--green); }
     .toast.warn .ic{ background: rgba(255,209,90,.10); border-color: rgba(255,209,90,.22); color: var(--amber); }
     .toast.bad .ic{ background: rgba(255,90,122,.10); border-color: rgba(255,90,122,.22); color: var(--red); }
-    .toast .tt{ font-weight:800; font-size:13px; }
+    .toast .tt{ font-weight:900; font-size:13px; }
     .toast .tx{ font-size:12px; color: rgba(151,163,182,.92); margin-top:2px; }
     .toast .x{
       margin-left:auto;
@@ -357,7 +379,7 @@
         <span id="statusText">Sin producto seleccionado</span>
       </div>
 
-      <div class="selector tight">
+      <div class="selector">
         <select id="pfSelect" aria-label="Producto"></select>
         <button class="btn small ghost" id="btnNewPF" type="button">Nuevo</button>
       </div>
@@ -371,170 +393,240 @@
   </div>
 
   <main class="wrap">
-    <!-- Left column: Materias primas -->
+    <!-- Left: Materias primas -->
     <section class="card">
       <div class="hd">
-        <b>Materias primas</b>
-        <span class="muted" style="font-size:12px;">Catálogo</span>
+        <div class="hd-left">
+          <div class="icon">🧾</div>
+          <div>
+            <b>Materias primas</b>
+            <div class="mini">Catálogo de insumos</div>
+          </div>
+        </div>
+        <span class="badge" id="mpCountBadge">0 insumos</span>
       </div>
+
       <div class="bd">
-        <div class="grid2 tight">
-          <div class="field" id="f_mpCode">
-            <label>Código *</label>
-            <input id="mpCode" placeholder="MP-APPLE" autocomplete="off"/>
-            <div class="err">Campo obligatorio.</div>
+        <div class="section">
+          <div class="shd">
+            <div class="ttl"><span class="icon" style="width:28px;height:28px;border-radius:10px;">➕</span>Agregar / editar insumo</div>
+            <span class="badge">Campos con *</span>
           </div>
-          <div class="field has-prefix" id="f_mpCost">
-            <label>Costo unitario *</label>
-            <span class="prefix">$</span>
-            <input id="mpCost" type="number" step="0.01" placeholder="0.00" inputmode="decimal"/>
-            <div class="err">Captura un costo válido (≥ 0).</div>
+
+          <div class="grid2">
+            <div class="field" id="f_mpCode">
+              <label>Código *</label>
+              <input id="mpCode" placeholder="MP-APPLE" autocomplete="off"/>
+              <div class="err">Campo obligatorio.</div>
+            </div>
+            <div class="field has-prefix" id="f_mpCost">
+              <label>Costo unitario *</label>
+              <span class="prefix">$</span>
+              <input id="mpCost" type="number" step="0.01" placeholder="0.00" inputmode="decimal"/>
+              <div class="err">Captura un costo válido (≥ 0).</div>
+            </div>
+            <div class="field" style="grid-column:1/-1" id="f_mpDesc">
+              <label>Descripción *</label>
+              <input id="mpDesc" placeholder="Manzana verde (pieza)" autocomplete="off"/>
+              <div class="err">Campo obligatorio.</div>
+            </div>
           </div>
-          <div class="field" style="grid-column:1/-1" id="f_mpDesc">
-            <label>Descripción *</label>
-            <input id="mpDesc" placeholder="Manzana verde (pieza)" autocomplete="off"/>
-            <div class="err">Campo obligatorio.</div>
+
+          <div class="row" style="margin-top:10px;">
+            <button class="btn secondary" id="btnAddMP" type="button">Guardar materia prima</button>
           </div>
         </div>
 
-        <div class="row" style="margin-top:10px;">
-          <button class="btn secondary" id="btnAddMP" type="button">Guardar materia prima</button>
-        </div>
+        <div class="section">
+          <div class="shd">
+            <div class="ttl"><span class="icon" style="width:28px;height:28px;border-radius:10px;">📦</span>Listado de insumos</div>
+            <span class="badge">Editar / eliminar</span>
+          </div>
 
-        <div class="divider"></div>
+          <div style="max-height:420px; overflow:auto; border-radius:12px;">
+            <table class="table" id="mpTable">
+              <thead>
+                <tr>
+                  <th style="width:140px;">Código</th>
+                  <th>Descripción</th>
+                  <th class="right" style="width:130px;">Costo</th>
+                  <th class="right" style="width:140px;">Acción</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
 
-        <div style="max-height:420px; overflow:auto; border-radius:12px;">
-          <table class="table" id="mpTable">
-            <thead>
-              <tr>
-                <th style="width:140px;">Código</th>
-                <th>Descripción</th>
-                <th class="right" style="width:130px;">Costo</th>
-                <th class="right" style="width:140px;">Acción</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-
-        <div class="mini">
-          Define el costo unitario por tu unidad (pieza / gramo / ml) y usa esa misma unidad en la receta.
+          <div class="help">
+            Define el costo unitario por unidad (pieza / gramo / ml) y usa esa misma unidad en la receta.
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Right column: Producto + receta -->
+    <!-- Right: Producto + receta -->
     <section class="card">
       <div class="hd">
-        <b>Producto y receta</b>
-        <span class="muted" style="font-size:12px;" id="pfHint">—</span>
+        <div class="hd-left">
+          <div class="icon">🏷️</div>
+          <div>
+            <b>Producto y receta</b>
+            <div class="mini" id="pfHint">—</div>
+          </div>
+        </div>
+        <span class="badge" id="pfBadge">—</span>
       </div>
+
       <div class="bd">
+        <!-- Producto -->
+        <div class="section">
+          <div class="shd">
+            <div class="ttl"><span class="icon" style="width:28px;height:28px;border-radius:10px;">🧩</span>Datos del producto</div>
+            <span class="badge">Guardar para actualizar</span>
+          </div>
 
-        <div class="split tight">
-          <div class="field" id="f_pfCode">
-            <label>Código del producto *</label>
-            <input id="pfCode" placeholder="PF-MANZANA" autocomplete="off"/>
-            <div class="err">Campo obligatorio.</div>
+          <div class="grid2">
+            <div class="field" id="f_pfCode">
+              <label>Código del producto *</label>
+              <input id="pfCode" placeholder="PF-MANZANA" autocomplete="off"/>
+              <div class="err">Campo obligatorio.</div>
+            </div>
+            <div class="field" id="f_pfDailyQty">
+              <label>Piezas del día *</label>
+              <input id="pfDailyQty" type="number" step="1" placeholder="0" inputmode="numeric"/>
+              <div class="err">Captura una cantidad válida (≥ 0).</div>
+            </div>
+            <div class="field" style="grid-column:1/-1" id="f_pfDesc">
+              <label>Descripción *</label>
+              <input id="pfDesc" placeholder="Manzana preparada" autocomplete="off"/>
+              <div class="err">Campo obligatorio.</div>
+            </div>
           </div>
-          <div class="field" id="f_pfDailyQty">
-            <label>Piezas del día *</label>
-            <input id="pfDailyQty" type="number" step="1" placeholder="0" inputmode="numeric"/>
-            <div class="err">Captura una cantidad válida (≥ 0).</div>
-          </div>
-          <div class="field" style="grid-column:1/-1" id="f_pfDesc">
-            <label>Descripción *</label>
-            <input id="pfDesc" placeholder="Manzana preparada" autocomplete="off"/>
-            <div class="err">Campo obligatorio.</div>
+
+          <div class="row" style="margin-top:10px;">
+            <button class="btn" id="btnSavePF" type="button">Guardar producto</button>
           </div>
         </div>
 
-        <div class="row" style="margin-top:10px;">
-          <button class="btn" id="btnSavePF" type="button">Guardar producto</button>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="kpis">
-          <div class="kpi">
-            <div class="t">Costo de producción (unitario)</div>
-            <div class="v" id="kpiUnit">$0.00</div>
-            <div class="sub" id="kpiUnitSub">—</div>
+        <!-- KPIs -->
+        <div class="section">
+          <div class="shd">
+            <div class="ttl"><span class="icon" style="width:28px;height:28px;border-radius:10px;">📊</span>Resumen de costos</div>
+            <span class="badge">Auto-cálculo</span>
           </div>
-          <div class="kpi">
-            <div class="t">Costo total del día (producción)</div>
-            <div class="v" id="kpiDay">$0.00</div>
-            <div class="sub" id="kpiDaySub">—</div>
-          </div>
-        </div>
 
-        <div class="divider"></div>
+          <div class="kpis">
+            <div class="kpi">
+              <div class="t">🧮 Costo de producción (unitario)</div>
+              <div class="v" id="kpiProdUnit">$0.00</div>
+              <div class="sub" id="kpiProdUnitSub">—</div>
+            </div>
 
-        <!-- Venta -->
-        <div class="split tight">
-          <div class="field" id="f_margin">
-            <label>Margen de ganancia (%)</label>
-            <input id="pfMargin" type="number" step="1" placeholder="40" inputmode="numeric"/>
-            <div class="help">Por defecto 40%. Puedes cambiarlo.</div>
-          </div>
-          <div class="field has-prefix" id="f_sellPrice">
-            <label>Precio de venta (unitario)</label>
-            <span class="prefix">$</span>
-            <input id="pfSellPrice" type="number" step="0.01" placeholder="0.00" inputmode="decimal"/>
-            <div class="help">Puedes editarlo. Si no lo tocas, se calcula con el margen.</div>
-          </div>
-          <div class="field has-prefix" style="grid-column:1/-1" id="f_sellDay">
-            <label>Venta total del día</label>
-            <span class="prefix">$</span>
-            <input id="pfSellDay" type="number" step="0.01" placeholder="0.00" inputmode="decimal" disabled />
-            <div class="help">Automático: precio venta × piezas del día.</div>
+            <!-- ESTE ES EL QUE CAMBIA: TOTAL DEL DÍA = VENTA TOTAL -->
+            <div class="kpi">
+              <div class="t">💰 Total del día (VENTA)</div>
+              <div class="v" id="kpiSellDay">$0.00</div>
+              <div class="sub" id="kpiSellDaySub">Incluye ganancia</div>
+            </div>
+
+            <div class="kpi">
+              <div class="t">🧾 Total del día (PRODUCCIÓN)</div>
+              <div class="v" id="kpiProdDay">$0.00</div>
+              <div class="sub" id="kpiProdDaySub">Costo × piezas</div>
+            </div>
+
+            <div class="kpi">
+              <div class="t">📌 Precio de venta (unitario)</div>
+              <div class="v" id="kpiSellUnit">$0.00</div>
+              <div class="sub" id="kpiSellUnitSub">Producción + % ganancia</div>
+            </div>
           </div>
         </div>
 
-        <div class="divider"></div>
+        <!-- Ganancia -->
+        <div class="section">
+          <div class="shd">
+            <div class="ttl"><span class="icon" style="width:28px;height:28px;border-radius:10px;">⚙️</span>Ganancia</div>
+            <span class="badge">Editable</span>
+          </div>
+
+          <div class="grid2">
+            <div class="field" id="f_margin">
+              <label>Porcentaje de ganancia (%)</label>
+              <input id="pfMargin" type="number" step="1" placeholder="40" inputmode="numeric"/>
+              <div class="help">Por defecto 40%. Cambia y se recalcula automático.</div>
+            </div>
+
+            <div class="field has-prefix">
+              <label>Ganancia (unitaria)</label>
+              <span class="prefix">$</span>
+              <input id="pfProfitUnit" type="number" step="0.01" inputmode="decimal" disabled />
+              <div class="help">Automático: producción × (ganancia%).</div>
+            </div>
+
+            <div class="field has-prefix" style="grid-column:1/-1">
+              <label>Ganancia total del día</label>
+              <span class="prefix">$</span>
+              <input id="pfProfitDay" type="number" step="0.01" inputmode="decimal" disabled />
+              <div class="help">Automático: ganancia unitaria × piezas del día.</div>
+            </div>
+          </div>
+        </div>
 
         <!-- Receta -->
-        <div class="row tight">
-          <div class="field" style="min-width:240px;" id="f_recipeMP">
-            <label>Materia prima *</label>
-            <select id="recipeMP"></select>
-            <div class="err">Selecciona una materia prima.</div>
+        <div class="section">
+          <div class="shd">
+            <div class="ttl"><span class="icon" style="width:28px;height:28px;border-radius:10px;">🧪</span>Receta (insumos)</div>
+            <span class="badge">Agregar líneas</span>
           </div>
-          <div class="field" style="min-width:140px;" id="f_recipeQty">
-            <label>Cantidad *</label>
-            <input id="recipeQty" type="number" step="0.01" placeholder="0" inputmode="decimal"/>
-            <div class="err">Captura una cantidad > 0.</div>
+
+          <div class="row">
+            <div class="field" style="min-width:240px;" id="f_recipeMP">
+              <label>Materia prima *</label>
+              <select id="recipeMP"></select>
+              <div class="err">Selecciona una materia prima.</div>
+            </div>
+            <div class="field" style="min-width:140px;" id="f_recipeQty">
+              <label>Cantidad *</label>
+              <input id="recipeQty" type="number" step="0.01" placeholder="0" inputmode="decimal"/>
+              <div class="err">Captura una cantidad > 0.</div>
+            </div>
+            <div class="field" style="min-width:240px;">
+              <label>Nota</label>
+              <input id="recipeNote" placeholder="opcional" autocomplete="off"/>
+              <div class="help">Ej: “chamoy”, “gomitas mixtas”.</div>
+            </div>
+            <div style="min-width:170px;">
+              <label>&nbsp;</label>
+              <button class="btn secondary" id="btnAddLine" type="button">Agregar a receta</button>
+            </div>
           </div>
-          <div class="field" style="min-width:240px;">
-            <label>Nota</label>
-            <input id="recipeNote" placeholder="opcional" autocomplete="off"/>
-            <div class="help">Ej: “chamoy”, “gomitas mixtas”.</div>
-          </div>
-          <div style="min-width:160px;">
-            <label>&nbsp;</label>
-            <button class="btn secondary" id="btnAddLine" type="button">Agregar a receta</button>
+
+          <div style="margin-top:12px; max-height:380px; overflow:auto; border-radius:12px;">
+            <table class="table" id="recipeTable">
+              <thead>
+                <tr>
+                  <th>Insumo</th>
+                  <th class="right" style="width:110px;">Cant.</th>
+                  <th class="right" style="width:130px;">Costo</th>
+                  <th>Nota</th>
+                  <th class="right" style="width:90px;">Acción</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
         </div>
 
-        <div style="margin-top:12px; max-height:380px; overflow:auto; border-radius:12px;">
-          <table class="table" id="recipeTable">
-            <thead>
-              <tr>
-                <th>Insumo</th>
-                <th class="right" style="width:110px;">Cant.</th>
-                <th class="right" style="width:130px;">Costo</th>
-                <th>Nota</th>
-                <th class="right" style="width:90px;">Acción</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <!-- Respaldo -->
+        <div class="section">
+          <div class="shd">
+            <div class="ttl"><span class="icon" style="width:28px;height:28px;border-radius:10px;">🛡️</span>Respaldo</div>
+            <span class="badge">JSON</span>
+          </div>
+          <label>Respaldo (JSON)</label>
+          <textarea id="jsonBox" placeholder="Exportar genera un respaldo aquí. Importar: pega aquí y aplica."></textarea>
         </div>
-
-        <div class="divider"></div>
-
-        <label>Respaldo (JSON)</label>
-        <textarea id="jsonBox" placeholder="Exportar genera un respaldo aquí. Importar: pega aquí y aplica."></textarea>
       </div>
     </section>
   </main>
@@ -543,9 +635,9 @@
 
 <script>
 (() => {
-  // ---------------- IndexedDB (persistencia confiable) ----------------
+  // ---------------- IndexedDB ----------------
   const DB_NAME = "costeo_bom_db_pro";
-  const DB_VER  = 2; // subimos versión por nuevos campos
+  const DB_VER  = 3; // subimos por nuevos campos
   const STORE   = "state";
   const KEY     = "APP";
 
@@ -657,10 +749,9 @@
       state.products = Array.isArray(saved.products) ? saved.products : [];
       state.selected = saved.selected || "";
     }
-    // Backfill nuevos campos (si ya existían productos antiguos)
+    // backfill
     state.products.forEach(p=>{
       if(p.marginPct == null) p.marginPct = 40;
-      if(p.sellPrice == null) p.sellPrice = null; // null = auto
       if(p.recipe == null) p.recipe = [];
       if(p.dailyQty == null) p.dailyQty = 0;
       if(p.desc == null) p.desc = "";
@@ -671,7 +762,7 @@
   }
 
   // ---------------- Calculations ----------------
-  function calcUnitCost(p){
+  function calcUnitProdCost(p){
     if(!p) return 0;
     let sum = 0;
     (p.recipe||[]).forEach(r=>{
@@ -683,23 +774,31 @@
     return round2(sum);
   }
 
-  function calcSellPrice(p){
-    if(!p) return 0;
-    const unit = calcUnitCost(p);
-    const pct = Number(p.marginPct ?? 40);
-    const auto = round2(unit * (1 + (pct/100)));
-    const manual = Number(p.sellPrice);
-    // si manual es válido (>=0), usar manual, si no auto
-    if(Number.isFinite(manual) && manual >= 0) return round2(manual);
-    return auto;
+  function calcMarginPct(p){
+    const pct = Number(p?.marginPct ?? 40);
+    // rango razonable
+    if(!Number.isFinite(pct) || pct < 0) return 40;
+    return pct;
+  }
+
+  function calcProfitUnit(p){
+    const prodUnit = calcUnitProdCost(p);
+    const pct = calcMarginPct(p);
+    return round2(prodUnit * (pct/100));
+  }
+
+  function calcSellUnit(p){
+    const prodUnit = calcUnitProdCost(p);
+    const profitUnit = calcProfitUnit(p);
+    return round2(prodUnit + profitUnit);
   }
 
   function statusForProduct(p){
     if(!p) return { dot:"warn", text:"Sin producto seleccionado" };
     const hasRecipe = (p.recipe||[]).length > 0;
-    const unit = calcUnitCost(p);
+    const prodUnit = calcUnitProdCost(p);
     if(!hasRecipe) return { dot:"warn", text:`${p.code} — sin receta` };
-    if(unit <= 0) return { dot:"warn", text:`${p.code} — revisa costos` };
+    if(prodUnit <= 0) return { dot:"warn", text:`${p.code} — revisa costos` };
     return { dot:"ok", text:`${p.code} — listo` };
   }
 
@@ -710,7 +809,7 @@
     renderMPTable();
     renderPFForm();
     renderRecipe();
-    renderTotalsAndSell();
+    renderKPIs();
     renderStatus();
     syncButtons();
   }
@@ -720,6 +819,9 @@
     const st = statusForProduct(p);
     $("statusDot").className = `dot ${st.dot}`;
     $("statusText").textContent = st.text;
+
+    $("pfBadge").textContent = p ? `${(p.recipe||[]).length} insumo(s)` : "—";
+    $("mpCountBadge").textContent = `${state.mp.length} insumos`;
   }
 
   function renderPFSelect(){
@@ -755,13 +857,7 @@
     $("pfCode").value = p ? p.code : "";
     $("pfDesc").value = p ? (p.desc || "") : "";
     $("pfDailyQty").value = p ? (p.dailyQty ?? 0) : 0;
-
     $("pfMargin").value = p ? (p.marginPct ?? 40) : 40;
-
-    // si es null => mostrar vacío (auto)
-    $("pfSellPrice").value = p
-      ? (p.sellPrice == null ? "" : Number(p.sellPrice))
-      : "";
   }
 
   function renderMPSelectForRecipe(){
@@ -894,37 +990,37 @@
     });
   }
 
-  function renderTotalsAndSell(){
+  function renderKPIs(){
     const p = selPF();
-    const unit = calcUnitCost(p);
     const dayQty = p ? Number(p.dailyQty||0) : 0;
-    const prodDay = round2(unit * dayQty);
 
-    $("kpiUnit").textContent = money(unit);
-    $("kpiDay").textContent  = money(prodDay);
+    const prodUnit = calcUnitProdCost(p);
+    const prodDay = round2(prodUnit * dayQty);
 
-    $("kpiUnitSub").textContent = p
-      ? `Receta: ${(p.recipe||[]).length} insumo(s)`
-      : "—";
+    const pct = calcMarginPct(p);
+    const profitUnit = calcProfitUnit(p);
+    const profitDay = round2(profitUnit * dayQty);
 
-    $("kpiDaySub").textContent = p
-      ? `Piezas del día: ${dayQty.toLocaleString("es-MX")}`
-      : "—";
+    const sellUnit = calcSellUnit(p);
+    const sellDay  = round2(sellUnit * dayQty);
 
-    const sellUnit = calcSellPrice(p);
-    const sellDay = round2(sellUnit * dayQty);
+    $("kpiProdUnit").textContent = money(prodUnit);
+    $("kpiProdDay").textContent  = money(prodDay);
 
-    // render venta (inputs)
-    $("pfSellDay").value = (p ? sellDay : 0).toFixed(2);
-    // si no hay producto seleccionado, dejamos sellPrice vacío
-    if(!p){
-      $("pfSellPrice").value = "";
-      $("pfMargin").value = 40;
-    }
+    $("kpiSellUnit").textContent = money(sellUnit);
+    $("kpiSellDay").textContent  = money(sellDay);
+
+    $("kpiProdUnitSub").textContent = p ? `Receta: ${(p.recipe||[]).length} insumo(s)` : "—";
+    $("kpiProdDaySub").textContent  = p ? `Piezas del día: ${dayQty.toLocaleString("es-MX")}` : "—";
+
+    $("kpiSellUnitSub").textContent = `Ganancia: ${pct}%`;
+    $("kpiSellDaySub").textContent  = `Producción ${money(prodDay)} + Ganancia ${money(profitDay)}`;
+
+    $("pfProfitUnit").value = (p ? profitUnit : 0).toFixed(2);
+    $("pfProfitDay").value  = (p ? profitDay : 0).toFixed(2);
   }
 
   function syncButtons(){
-    // Deshabilitar agregar receta si no hay producto
     const p = selPF();
     $("btnAddLine").disabled = !p || !state.mp.length;
   }
@@ -954,7 +1050,7 @@
     let ok = true;
     if(!code){ setInvalid("f_pfCode", true); ok=false; }
     if(!desc){ setInvalid("f_pfDesc", true); ok=false; }
-    if(!(Number.isFinite(dailyQty) && dailyQty >= 0)){ setInvalid("f_pfDailyQty", true, "Captura una cantidad válida (≥ 0)."); ok=false; }
+    if(!(Number.isFinite(dailyQty) && dailyQty >= 0)){ setInvalid("f_pfDailyQty", true); ok=false; }
 
     if(!ok) toast("bad","Faltan datos","Completa los campos obligatorios del producto.");
     return ok;
@@ -1021,32 +1117,19 @@
     const desc = norm($("pfDesc").value);
     const dailyQty = Number($("pfDailyQty").value);
 
-    // margen / venta
-    const marginPct = Number($("pfMargin").value);
-    const sellPriceRaw = $("pfSellPrice").value.trim();
-    const sellPrice = sellPriceRaw === "" ? null : round2(Number(sellPriceRaw));
-
-    // validaciones suaves para margen/venta
-    const marginOk = Number.isFinite(marginPct) && marginPct >= 0 && marginPct <= 1000;
-    if(!marginOk){
-      toast("warn","Margen inválido","Usaré 40% por defecto.");
-    }
-    const sellOk = (sellPrice === null) || (Number.isFinite(sellPrice) && sellPrice >= 0);
-    if(!sellOk){
-      toast("warn","Precio inválido","Se calculará automáticamente con el margen.");
-    }
+    let marginPct = Number($("pfMargin").value);
+    if(!Number.isFinite(marginPct) || marginPct < 0) marginPct = 40;
 
     let p = findPF(code);
     if(!p){
-      p = { code, desc, dailyQty, recipe: [], marginPct: marginOk ? marginPct : 40, sellPrice: sellOk ? sellPrice : null };
+      p = { code, desc, dailyQty, recipe: [], marginPct };
       state.products.push(p);
     }else{
       p.code = code;
       p.desc = desc;
       p.dailyQty = dailyQty;
       p.recipe = p.recipe || [];
-      p.marginPct = marginOk ? marginPct : (p.marginPct ?? 40);
-      p.sellPrice = sellOk ? sellPrice : null;
+      p.marginPct = marginPct;
     }
 
     state.selected = code;
@@ -1108,10 +1191,8 @@
       state.products = Array.isArray(obj.products) ? obj.products : [];
       state.selected = obj.selected || "";
 
-      // backfill
       state.products.forEach(p=>{
         if(p.marginPct == null) p.marginPct = 40;
-        if(p.sellPrice == null) p.sellPrice = null;
         if(p.recipe == null) p.recipe = [];
         if(p.dailyQty == null) p.dailyQty = 0;
         if(p.desc == null) p.desc = "";
@@ -1125,19 +1206,27 @@
     }
   });
 
-  // Auto-recalcular venta cuando cambia margen/precio/cantidad del día (sin guardar hasta que presione “Guardar producto”)
-  ["pfMargin","pfSellPrice","pfDailyQty"].forEach(id=>{
-    $(id).addEventListener("input", ()=>{
-      renderTotalsAndSell();
-    });
+  // Recalcular en vivo el % (sin guardar hasta que presiones Guardar producto)
+  $("pfMargin").addEventListener("input", ()=>{
+    const p = selPF();
+    if(!p) return;
+    const v = Number($("pfMargin").value);
+    if(Number.isFinite(v) && v >= 0){
+      // solo para preview visual, no persistimos hasta guardar
+      p.marginPct_preview = v;
+    }else{
+      p.marginPct_preview = 40;
+    }
+    // usamos preview temporal si existe
+    const original = p.marginPct;
+    p.marginPct = p.marginPct_preview;
+    renderKPIs();
+    p.marginPct = original;
   });
 
-  // Si el usuario borra el precio manual => vuelve a auto
-  $("pfSellPrice").addEventListener("blur", ()=>{
-    const v = $("pfSellPrice").value.trim();
-    if(v === ""){
-      renderTotalsAndSell();
-    }
+  // si cambias piezas del día, que se refleje (preview)
+  $("pfDailyQty").addEventListener("input", ()=>{
+    renderKPIs();
   });
 
   // ---------------- Init ----------------
@@ -1149,3 +1238,4 @@
 </script>
 </body>
 </html>
+   
